@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "build websocket server using node express and mongodb for real-time update",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "dev": "nodemon ./index.js"
+  },
+  "author": "Bereket Sewnet",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "http": "^0.0.1-security",
+    "mongoose": "^8.4.0",
+    "nodemon": "^3.1.0",
+    "socket.io": "^2.3.0"
+  }
+}
