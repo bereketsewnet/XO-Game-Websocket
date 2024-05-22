@@ -5,16 +5,68 @@ const mongoose = require("mongoose");
 const app = express();
 const port = process.env.PORT || 3000;
 var server = http.createServer(app);
+const Room = require("./models/room.js");
+// middle ware
+app.use(express.json());
 
 var io = require("socket.io")(server);
 io.on("connection", (socket) => {
   console.log('connected to socket');
-   socket.on("createRoom", ({nickname}) => {
-      console.log(nickname);
+   socket.on("createRoom", async ({nickname}) => {
+      try{
+
+        // room creation
+      let room = new Room();
+      let player = {
+        socketID: socket.id,
+        nickname,
+        playerType: 'X',
+      };
+      room.players.push(player);
+      room.turn = player;
+      // store the object of player
+     room = await room.save();
+     const roomId = room._id.toString();
+     socket.join(roomId);
+ 
+     // io send data to everyOne
+     // socket sending data to your selfe
+     io.to(roomId).emit("createRoomSuccess", room);
+
+      }catch (e) {
+        console.log(e);
+      }
+      
+   });
+   socket.on('joinRoom', async ({nickname, roomId}) => {
+     try{
+      // if(roomId.match(/^[0-9a-fA-F{24}$]/)){
+      //   return socket.emit('errorOccurred', 'Please enter a valid room ID');
+      // }
+
+      let room = await Room.findById(roomId);
+      if(room.isJoin) {
+        let player = {
+          nickname,
+          socketID: socket.id,
+          playerType: 'O'
+        }
+        socket.join(roomId);
+        room.players.push(player);
+        room.isJoin = false;
+        room = await room.save();
+        io.to(roomId).emit("joinRoomSuccess", room);
+        io.to(roomId).emit("updatePlayers", room.players);
+        io.to(roomId).emit("updateRoom", room);
+      }else {
+        return socket.emit('errorOccurred', 'The game Not Started');
+      }
+     }catch (e) {
+      console.log(e);
+     }
+
    });
 });
-// middle ware
-app.use(express.json());
 const DB = "mongodb+srv://bereket:65500639@cluster0.lf8hh5u.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 mongoose.connect(DB)
 .then(()=> {
@@ -27,4 +79,3 @@ mongoose.connect(DB)
 server.listen(port, '0.0.0.0', () => {
   console.log("server started");
 });
-// mongodb+srv://bereket:65500639@cluster0.lf8hh5u.mongodb.net/

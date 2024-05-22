@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tok/resources/socket_methods.dart';
 
 import '../responsive/responsive.dart';
 import '../utils/colors.dart';
@@ -8,6 +9,7 @@ import '../widgets/custom_textfiled.dart';
 
 class JoinRoomScreen extends StatefulWidget {
   static String routeName = '/join-room';
+
   const JoinRoomScreen({super.key});
 
   @override
@@ -17,6 +19,7 @@ class JoinRoomScreen extends StatefulWidget {
 class _JoinRoomScreenState extends State<JoinRoomScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _gameIdController = TextEditingController();
+  final SocketMethods _socketMethods = SocketMethods();
 
   @override
   void dispose() {
@@ -24,6 +27,15 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
     _nameController.dispose();
     _gameIdController.dispose();
   }
+
+  @override
+  void initState() {
+    super.initState();
+    _socketMethods.joinRoomSuccessListener(context);
+    _socketMethods.errorOccurredListener(context);
+    _socketMethods.updatePlayersStateListener(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -58,8 +70,15 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
                 controller: _gameIdController,
                 hintText: 'Enter Game Id',
               ),
-             const SizedBox(height: 20),
-              CustomButton(onTap: (){}, text: 'Join'),
+              const SizedBox(height: 20),
+              CustomButton(
+                  onTap: () {
+                    _socketMethods.joinRoom(
+                      _nameController.text,
+                      _gameIdController.text,
+                    );
+                  },
+                  text: 'Join'),
             ],
           ),
         ),
