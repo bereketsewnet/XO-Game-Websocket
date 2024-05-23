@@ -45,6 +45,12 @@ class SocketMethods {
     _socketClient.on('createRoomSuccess', (room) {
       Provider.of<RoomDataProvider>(context, listen: false)
           .updateRoomData(room);
+      // emitter
+      _socketClient.emit('gameCreatorJoin', {
+        'nickname': room['turn']['nickname'],
+        'roomId': room['_id'],
+      });
+      //
       Navigator.pushNamed(context, GameScreen.routeName);
     });
   }
@@ -111,6 +117,13 @@ class SocketMethods {
     _socketClient.on('endGame', (playerData) {
       showGameDialog(context, '${playerData['nickname']} Won the game!');
       Navigator.popUntil(context, (route) => false);
+    });
+  }
+  
+  void gameCreatorJoinListener(BuildContext context){
+    _socketClient.on('gameCreatorListener', (data) {
+      var roomDataProvider = Provider.of<RoomDataProvider>(context, listen: false);
+      roomDataProvider.updateGameCreatorList(data);
     });
   }
 }

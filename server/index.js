@@ -67,6 +67,16 @@ io.on("connection", (socket) => {
 
    });
 
+   socket.on('gameCreatorJoin', ({nickname, roomId}) => {
+
+    io.emit('gameCreatorListener', ({
+      nickname,
+      roomId,
+
+    }));
+
+   });
+
    socket.on('tap', async({index, roomId}) => {
       
     try{

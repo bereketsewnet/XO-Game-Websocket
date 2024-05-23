@@ -6,6 +6,7 @@ import 'package:tic_tok/GameView/scoreboard.dart';
 import 'package:tic_tok/GameView/waiting_lobby.dart';
 
 import '../GameView/tictactoe_board.dart';
+import '../utils/colors.dart';
 
 class GameScreen extends StatefulWidget {
   static String routeName = '/game';
@@ -32,6 +33,7 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     RoomDataProvider roomDataProvider = Provider.of<RoomDataProvider>(context, listen: true);
     return Scaffold(
+      backgroundColor: bgColor,
       body: roomDataProvider.roomData['isJoin']
           ? const WaitingLobby()
           : SafeArea(

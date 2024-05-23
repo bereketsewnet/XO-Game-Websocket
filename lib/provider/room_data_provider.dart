@@ -4,6 +4,7 @@ import 'package:tic_tok/models/player.dart';
 class RoomDataProvider extends ChangeNotifier {
   Map<String, dynamic> _roomData = {};
   List<String> _displayElement = ['', '', '', '', '', '', '', '', ''];
+  List<Map<String, dynamic>> _gameCreatorList = [];
   int _filledBoxes = 0;
   Player _player1 = Player(
     nickname: '',
@@ -23,6 +24,7 @@ class RoomDataProvider extends ChangeNotifier {
   Map<String, dynamic> get roomData => _roomData;
   List<String> get displayElements => _displayElement;
   int get filledBoxes => _filledBoxes;
+  List<Map<String, dynamic>> get gameCreatorList => _gameCreatorList;
   Player get player1 => _player1;
   Player get player2 => _player2;
 
@@ -48,6 +50,13 @@ class RoomDataProvider extends ChangeNotifier {
   void updateDisplayElements(int index, String choice) {
     _displayElement[index] = choice;
     _filledBoxes += 1;
+    notifyListeners();
+  }
+
+  // update game creator list to easy join the game display on join game page
+  void updateGameCreatorList(Map<String, dynamic> creatorUser){
+    _gameCreatorList.add(creatorUser);
+    print(creatorUser);
     notifyListeners();
   }
 
