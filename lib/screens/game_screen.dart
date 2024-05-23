@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tok/provider/room_data_provider.dart';
 import 'package:tic_tok/resources/socket_methods.dart';
-import 'package:tic_tok/widgets/scoreboard.dart';
-import 'package:tic_tok/widgets/waiting_lobby.dart';
+import 'package:tic_tok/GameView/scoreboard.dart';
+import 'package:tic_tok/GameView/waiting_lobby.dart';
+
+import '../GameView/tictactoe_board.dart';
 
 class GameScreen extends StatefulWidget {
   static String routeName = '/game';
@@ -22,6 +24,8 @@ class _GameScreenState extends State<GameScreen> {
     super.initState();
     _socketMethods.updateRoomListener(context);
     _socketMethods.updatePlayersStateListener(context);
+    _socketMethods.pointIncreaseListener(context);
+    _socketMethods.endGameListener(context);
   }
 
   @override
@@ -30,14 +34,14 @@ class _GameScreenState extends State<GameScreen> {
     return Scaffold(
       body: roomDataProvider.roomData['isJoin']
           ? const WaitingLobby()
-          : const SafeArea(
+          : SafeArea(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Scoreboard(),
-                  // const TicTacToeBoard(),
-                  // Text(
-                  //     '${roomDataProvider.roomData['turn']['nickname']}\'s turn'),
+                  const Scoreboard(),
+                  const TicTacToeBoard(),
+                  Text(
+                      '${roomDataProvider.roomData['turn']['nickname']}\'s turn'),
                 ],
               ),
             ),
