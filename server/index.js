@@ -8,9 +8,6 @@ var server = http.createServer(app);
 const Room = require("./models/room.js");
 // middle ware
 app.use(express.json());
-app.get('/', (req, res) => {
-  res.send('it works!!');
-});
 
 app.get('/', (req, res) => {
 
