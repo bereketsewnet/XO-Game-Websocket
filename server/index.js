@@ -9,6 +9,11 @@ const Room = require("./models/room.js");
 // middle ware
 app.use(express.json());
 
+app.get('/', (req, res) => {
+
+res.send('it work!!');
+});
+
 var io = require("socket.io")(server);
 io.on("connection", (socket) => {
   console.log('connected to socket');
